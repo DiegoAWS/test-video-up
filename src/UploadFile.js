@@ -6,11 +6,11 @@ import { useDropzone } from "react-dropzone";
 import ReactPlayer from "react-player";
 import styled from "styled-components";
 import axios from "axios";
-import { resetWarningCache } from "prop-types";
+import VideoRecorder from "react-video-recorder";
 
 const color = "#fc16de";
-// const urlUpload = "https://video-file-uploader.herokuapp.com/upload";
-const urlUpload = "http://localhost:3001/upload";
+const urlUpload = "https://video-file-uploader.herokuapp.com/upload";
+// const urlUpload = "http://localhost:3001/upload";
 
 const baseStyle = {
   flex: 1,
@@ -179,7 +179,7 @@ export default function UploadFile() {
               secondary
               label="Grabar Video"
               onClick={() => {
-                console.log("Click Button Video");
+                setStatus(state.RECORDING);
               }}
             />
             <Button
@@ -192,7 +192,22 @@ export default function UploadFile() {
           </div>
         </div>
       ) : status === state.RECORDING ? (
-        <div></div>
+        <div>
+          <VideoRecorder
+            countdownTime={0}
+            onRecordingComplete={(videoBlob) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(videoBlob);
+              reader.onload = function () {
+                setVideoBruto(videoBlob);
+                setStatus(state.LOADED);
+                console.log(reader.result);
+                setVideo(reader.result);
+                setFileName("recorded_" + new Date().toISOString());
+              };
+            }}
+          />
+        </div>
       ) : (
         <div style={{ width: "400px", margin: "0 auto" }}>
           <PlayerWrapper>
