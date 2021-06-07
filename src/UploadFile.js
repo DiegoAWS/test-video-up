@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Button, Meter } from "grommet";
 import { StatusGood, Upload } from "grommet-icons";
 import React, { useEffect, useMemo, useState } from "react";
@@ -101,7 +102,7 @@ export default function UploadFile() {
       setFileName("");
     }
   }, [acceptedFiles]);
-  const qpayUrl = "https://qvapay.com/api/v1";
+  //   const qpayUrl = "https://qvapay.com/api/v1";
   const appID = "e9e7c154-5f2c-4232-8c35-d2b6ffe69581";
   const appSecret = "v6nJAsMLtOYXya0V9L7rlp48PJzn6mpX6BHkIAHE9Jx6KKeHfA";
 
