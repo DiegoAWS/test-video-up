@@ -1,11 +1,15 @@
-import { Button } from "grommet";
-import { Upload } from "grommet-icons";
+import { Button, Meter } from "grommet";
+import { StatusGood, Upload } from "grommet-icons";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ReactPlayer from "react-player";
 import styled from "styled-components";
+import axios from "axios";
 
 const color = "#fc16de";
+// const urlUpload = "https://video-file-uploader.herokuapp.com/upload";
+const urlUpload = "http://localhost:3001/upload";
+
 const baseStyle = {
   flex: 1,
   display: "flex",
@@ -43,9 +47,17 @@ const PlayerWrapper = styled.div`
     left: 0;
   }
 `;
-
+const state = {
+  INIT: "INIT",
+  LOADED: "LOADED",
+  UPLOADING: "UPLOADING",
+  UPLOADED: "UPLOADED",
+};
 export default function UploadFile() {
   const [video, setVideo] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState(state.INIT);
   const {
     acceptedFiles,
     getRootProps,
@@ -80,14 +92,57 @@ export default function UploadFile() {
       const reader = new FileReader();
       reader.readAsDataURL(acceptedFiles[0]);
       reader.onload = function () {
+        setStatus(state.LOADED);
         setVideo(reader.result);
+        setFileName(acceptedFiles[0].name);
       };
-    } else setVideo(null);
+    } else {
+      setVideo(null);
+      setFileName("");
+    }
   }, [acceptedFiles]);
+  const qpayUrl = "https://qvapay.com/api/v1";
+  const appID = "e9e7c154-5f2c-4232-8c35-d2b6ffe69581";
+  const appSecret = "v6nJAsMLtOYXya0V9L7rlp48PJzn6mpX6BHkIAHE9Jx6KKeHfA";
 
+  const uploadVideo = async () => {
+    // const formData = new FormData();
+    // formData.append("file", video);
+    // formData.append("fileName", fileName);
+    // let config = {
+    //   onUploadProgress: (progressEvent) => {
+    //     let percentCompleted = Math.floor(
+    //       (progressEvent.loaded * 100) / progressEvent.total
+    //     );
+    //     setProgress(percentCompleted);
+    //   },
+    // };
+
+    // try {
+    //   const res = await axios.post(urlUpload, formData, config);
+    //   console.log({ res });
+    // } catch (ex) {
+    //   console.log(ex);
+    // }
+
+    axios
+      .post("https://qvapay.com/api/v2/info", {
+        params: {
+          app_id: appID,
+          app_secret: appSecret,
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      })
+      .then((dataString) => {
+        console.log("Login succesfully", dataString);
+        //   res.send(dataString);
+      });
+  };
   return (
     <div className="container">
-      {video ? (
+      {status !== state.INIT ? (
         <div style={{ width: "400px", margin: "0 auto" }}>
           <PlayerWrapper>
             <Button
@@ -100,9 +155,10 @@ export default function UploadFile() {
               }}
               margin="small"
               color="transparent"
-              label="✖"
+              label="&times"
               onClick={() => {
                 setVideo(null);
+                setFileName("");
               }}
             />
             <ReactPlayer
@@ -114,6 +170,18 @@ export default function UploadFile() {
               height={"100%"}
             />
           </PlayerWrapper>
+          <Button
+            style={{
+              color: color,
+              width: "100%",
+              marginTop: "20px",
+            }}
+            secondary
+            label="Enviar video"
+            onClick={() => {
+              uploadVideo();
+            }}
+          />
         </div>
       ) : (
         <div {...getRootProps({ style })}>
@@ -147,6 +215,26 @@ export default function UploadFile() {
               onClick={open}
             />
           </div>
+        </div>
+      )}
+      {status === state.UPLOADING && (
+        <div>
+          <Meter
+            values={[
+              {
+                value: progress,
+                label: "sixty",
+              },
+            ]}
+            aria-label="meter"
+            type="circle"
+          />
+        </div>
+      )}
+      {status === state.UPLOADED && (
+        <div>
+          <StatusGood color={color} />
+          <div>Enviado video solicitado</div>
         </div>
       )}
     </div>
