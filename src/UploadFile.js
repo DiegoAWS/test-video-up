@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { Button, Meter } from "grommet";
-import { StatusGood, Upload } from "grommet-icons";
+import { Close, StatusGood, Upload } from "grommet-icons";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ReactPlayer from "react-player";
 import styled from "styled-components";
 import axios from "axios";
+import { resetWarningCache } from "prop-types";
 
 const color = "#fc16de";
 // const urlUpload = "https://video-file-uploader.herokuapp.com/upload";
@@ -48,17 +49,34 @@ const PlayerWrapper = styled.div`
     left: 0;
   }
 `;
+
+const VideoFilter = styled.div`
+  z-index: 23;
+  position: absolute;
+  background: #a2ddff59;
+  left: 0;
+  display: flex;
+  inset: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fc16de;
+`;
+
 const state = {
   INIT: "INIT",
   LOADED: "LOADED",
   UPLOADING: "UPLOADING",
   UPLOADED: "UPLOADED",
+  COMPLETED: "COMPLETED",
+  RECORDING: "RECORDING",
 };
 export default function UploadFile() {
   const [video, setVideo] = useState(null);
   const [fileName, setFileName] = useState("");
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState(state.INIT);
+  const [videoBruto, setVideoBruto] = useState(null);
   const {
     acceptedFiles,
     getRootProps,
@@ -93,6 +111,7 @@ export default function UploadFile() {
       const reader = new FileReader();
       reader.readAsDataURL(acceptedFiles[0]);
       reader.onload = function () {
+        setVideoBruto(acceptedFiles[0]);
         setStatus(state.LOADED);
         setVideo(reader.result);
         setFileName(acceptedFiles[0].name);
@@ -102,89 +121,44 @@ export default function UploadFile() {
       setFileName("");
     }
   }, [acceptedFiles]);
-  //   const qpayUrl = "https://qvapay.com/api/v1";
-  const appID = "e9e7c154-5f2c-4232-8c35-d2b6ffe69581";
-  const appSecret = "v6nJAsMLtOYXya0V9L7rlp48PJzn6mpX6BHkIAHE9Jx6KKeHfA";
 
   const uploadVideo = async () => {
-    // const formData = new FormData();
-    // formData.append("file", video);
-    // formData.append("fileName", fileName);
-    // let config = {
-    //   onUploadProgress: (progressEvent) => {
-    //     let percentCompleted = Math.floor(
-    //       (progressEvent.loaded * 100) / progressEvent.total
-    //     );
-    //     setProgress(percentCompleted);
-    //   },
-    // };
+    setStatus(state.UPLOADING);
+    const formData = new FormData();
+    formData.append("file", videoBruto);
+    formData.append("fileName", fileName);
+    let config = {
+      onUploadProgress: (progressEvent) => {
+        let percentCompleted = Math.floor(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        setProgress(percentCompleted);
+      },
+    };
 
-    // try {
-    //   const res = await axios.post(urlUpload, formData, config);
-    //   console.log({ res });
-    // } catch (ex) {
-    //   console.log(ex);
-    // }
+    try {
+      const res = await axios.post(urlUpload, formData, config);
 
-    axios
-      .post("https://qvapay.com/api/v2/info", {
-        params: {
-          app_id: appID,
-          app_secret: appSecret,
-        },
-        headers: {
-          Accept: "application/json",
-        },
-      })
-      .then((dataString) => {
-        console.log("Login succesfully", dataString);
-        //   res.send(dataString);
-      });
+      console.log({ res });
+    } catch (ex) {
+      console.log(ex);
+    }
+    setStatus(state.UPLOADED);
+    setTimeout(() => {
+      setStatus(state.COMPLETED);
+    }, 2000);
+  };
+
+  const resetVideoStatus = () => {
+    setStatus(state.INIT);
+    setVideo(null);
+    setVideoBruto(null);
+    setFileName("");
+    setProgress(0);
   };
   return (
     <div className="container">
-      {status !== state.INIT ? (
-        <div style={{ width: "400px", margin: "0 auto" }}>
-          <PlayerWrapper>
-            <Button
-              style={{
-                color: color,
-                position: "absolute",
-                top: "0px",
-                right: "0px",
-                zIndex: "2",
-              }}
-              margin="small"
-              color="transparent"
-              label="&times"
-              onClick={() => {
-                setVideo(null);
-                setFileName("");
-              }}
-            />
-            <ReactPlayer
-              url={video}
-              controls
-              playsinline
-              className="videoPlayer"
-              width={"100%"}
-              height={"100%"}
-            />
-          </PlayerWrapper>
-          <Button
-            style={{
-              color: color,
-              width: "100%",
-              marginTop: "20px",
-            }}
-            secondary
-            label="Enviar video"
-            onClick={() => {
-              uploadVideo();
-            }}
-          />
-        </div>
-      ) : (
+      {status === state.INIT ? (
         <div {...getRootProps({ style })}>
           <input {...getInputProps()} />
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -217,25 +191,82 @@ export default function UploadFile() {
             />
           </div>
         </div>
-      )}
-      {status === state.UPLOADING && (
-        <div>
-          <Meter
-            values={[
-              {
-                value: progress,
-                label: "sixty",
-              },
-            ]}
-            aria-label="meter"
-            type="circle"
+      ) : status === state.RECORDING ? (
+        <div></div>
+      ) : (
+        <div style={{ width: "400px", margin: "0 auto" }}>
+          <PlayerWrapper>
+            {status === state.LOADED && (
+              <Button
+                style={{
+                  color: color,
+                  position: "absolute",
+                  top: "0px",
+                  right: "0px",
+                  zIndex: "2",
+                }}
+                margin="small"
+                color="transparent"
+                onClick={() => {
+                  resetVideoStatus();
+                }}
+              >
+                <Close color={color} />
+              </Button>
+            )}
+            <ReactPlayer
+              url={video}
+              controls
+              playsinline
+              className="videoPlayer"
+              width={"100%"}
+              height={"100%"}
+            />
+            {status === state.UPLOADING && (
+              <VideoFilter>
+                <Meter
+                  style={{ width: "40px", height: "40px" }}
+                  values={[
+                    {
+                      value: progress,
+                      label: "sixty",
+                    },
+                  ]}
+                  aria-label="meter"
+                  type="circle"
+                />
+                <div>Subiendo video solicitado</div>
+              </VideoFilter>
+            )}
+            {status === state.UPLOADED && (
+              <VideoFilter style={{ zIndex: "3" }}>
+                <StatusGood color={color} size="large" />
+                <div>Enviado video solicitado</div>
+              </VideoFilter>
+            )}
+          </PlayerWrapper>
+          <Button
+            style={{
+              color: color,
+              width: "100%",
+              marginTop: "20px",
+            }}
+            secondary
+            disabled={status === state.UPLOADING}
+            label={
+              status === state.UPLOADED || status === state.COMPLETED
+                ? "Subir Nuevo Video"
+                : "Enviar video"
+            }
+            onClick={() => {
+              if (status === state.LOADED) {
+                uploadVideo();
+              }
+              if (status === state.UPLOADED || status === state.COMPLETED) {
+                resetVideoStatus();
+              }
+            }}
           />
-        </div>
-      )}
-      {status === state.UPLOADED && (
-        <div>
-          <StatusGood color={color} />
-          <div>Enviado video solicitado</div>
         </div>
       )}
     </div>
