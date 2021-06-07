@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import { FileInput } from "grommet";
+import { Upload } from "grommet-icons";
+import { useState } from "react";
+import VideoRecorder from "react-video-recorder";
 
 function App() {
+  const [showRecorder, setShowRecorder] = useState(false);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button
+        onClick={() => {
+          setShowRecorder(!showRecorder);
+        }}
+      >
+        {showRecorder ? "HIDE" : "SHOW"}
+      </button>
+      {showRecorder && (
+        <VideoRecorder
+          countdownTime={0}
+          onRecordingComplete={(videoBlob) => {
+            // Do something with the video...
+            console.log("videoBlob", videoBlob);
+          }}
+        />
+      )}
+
+      <FileInput
+        name="file"
+        accept=".jpg"
+        onChange={(event) => {
+          const file = event.target.files[0];
+
+          console.log(file);
+        }}
+      >
+        <Upload />
+      </FileInput>
     </div>
   );
 }
