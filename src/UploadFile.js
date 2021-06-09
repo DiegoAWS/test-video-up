@@ -9,8 +9,8 @@ import axios from "axios";
 import VideoRecorder from "react-video-recorder";
 
 const color = "#fc16de";
-const urlUpload = "https://video-file-uploader.herokuapp.com/upload";
-// const urlUpload = "http://localhost:3001/upload";
+// const urlUpload = "https://video-file-uploader.herokuapp.com/upload";
+const urlUpload = "http://localhost:3001/upload";
 
 const baseStyle = {
   flex: 1,
@@ -54,9 +54,12 @@ const VideoFilter = styled.div`
   z-index: 23;
   position: absolute;
   background: #a2ddff59;
+  top: 0;
+  bottom: 0;
   left: 0;
+  right: 0;
   display: flex;
-  inset: 0;
+
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -201,7 +204,7 @@ export default function UploadFile() {
               reader.onload = function () {
                 setVideoBruto(videoBlob);
                 setStatus(state.LOADED);
-                console.log(reader.result);
+
                 setVideo(reader.result);
                 setFileName("recorded_" + new Date().toISOString());
               };
