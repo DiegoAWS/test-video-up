@@ -1,10 +1,11 @@
-import { Button } from "grommet";
+import { Button, Text } from "grommet";
 import { Upload } from "grommet-icons";
 import React, { useEffect, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { isFirstFileValid, styleOfDragZone } from "../helpers";
+import { TextWrapper } from "./styledComponents";
 
-const color = "red";
+const color = "#fc16de";
 export default function WelcomeFileUpload({
   onChange = () => {},
   onClickRecordVideo = () => {},
@@ -44,14 +45,16 @@ export default function WelcomeFileUpload({
 
   return (
     <div>
-      <div {...getRootProps({ styleDragAndDrop })}>
+      <div {...getRootProps()} style={styleDragAndDrop}>
         <input {...getInputProps()} />
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Upload color={color} style={{ margin: "12px" }} />
-        </div>
-        <div style={{ textAlign: "center", color: color }}>
-          Suelte los archivos aquí para subirlos de inmediato
-        </div>
+        <TextWrapper>
+          <Upload color="brand" />
+        </TextWrapper>
+        <TextWrapper>
+          <Text color="brand">
+            Suelte los archivos aquí para subirlos de inmediato
+          </Text>
+        </TextWrapper>
         <div
           style={{
             display: "flex",

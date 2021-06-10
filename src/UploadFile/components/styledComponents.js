@@ -1,5 +1,8 @@
 import { Button } from "grommet";
 import styled from "styled-components";
+import { celebrity } from "../../theme";
+
+const colorBrand = celebrity.global.colors.brand;
 
 export const PlayerWrapper = styled.div`
   position: relative;
@@ -29,10 +32,16 @@ export const VideoFilter = styled.div`
 
 export const CloseButton = styled(Button)`
   background: transparent;
-  margin: 0;
-  color: red;
+  margin: 1rem;
+  color: ${colorBrand};
   position: absolute;
   top: 0px;
   right: 0px;
-  zindex: 2;
+  z-index: 2;
+`;
+
+export const TextWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 12px;
 `;

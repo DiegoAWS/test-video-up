@@ -4,21 +4,21 @@ import React from "react";
 import ReactPlayer from "react-player";
 import { CloseButton, PlayerWrapper, VideoFilter } from "./styledComponents";
 import { state } from "../struct";
-const color = "red";
 
-export default function VideoPlayer(
+export default function VideoPlayer({
   urlVideo,
   uploadProgress,
   status,
   cancel,
-  uploadVideo
-) {
+  uploadVideo,
+}) {
+  console.log({ status });
   return (
     <div style={{ width: "400px", margin: "0 auto" }}>
       <PlayerWrapper>
         {status === state.LOADED && (
           <CloseButton onClick={cancel}>
-            <Close color={color} />
+            <Close color="brand" />
           </CloseButton>
         )}
         <ReactPlayer
@@ -47,20 +47,20 @@ export default function VideoPlayer(
         )}
         {status === state.UPLOADED && (
           <VideoFilter style={{ zIndex: "3" }}>
-            <StatusGood color={color} size="large" />
+            <StatusGood color="brand" size="large" />
             <div>Enviado video solicitado</div>
           </VideoFilter>
         )}
       </PlayerWrapper>
       <Button
         style={{
-          color: color,
           width: "100%",
           marginTop: "20px",
         }}
+        color="brand"
         secondary
         disabled={status === state.UPLOADING}
-        label={status === state.LOADED ? "Subir Nuevo Video" : "Enviar video"}
+        label={status === state.LOADED ? "Enviar video" : "Subir Nuevo Video"}
         onClick={() => {
           if (status === state.LOADED) {
             uploadVideo();

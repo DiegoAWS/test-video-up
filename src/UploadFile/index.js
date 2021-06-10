@@ -41,6 +41,7 @@ export default function UploadFile({ urlUpload }) {
    * Open de VideoRecorder
    */
   const onClickRecordVideo = () => {
+    console.log("clicked");
     setStatus(state.RECORDING);
   };
 
@@ -77,6 +78,7 @@ export default function UploadFile({ urlUpload }) {
     setUploadProgress(0);
   };
 
+  console.log(status);
   return (
     <div>
       {status === state.INIT ? (
@@ -84,9 +86,9 @@ export default function UploadFile({ urlUpload }) {
           onChange={onChangeFileHandler}
           onClickRecordVideo={onClickRecordVideo}
         />
-      ) : status === state.RECORDING ? (
-        <VideoRecorder onChange={onChangeFileHandler} />
-      ) : (
+      ) : status ===
+        state.RECORDING ? // <VideoRecorder onChange={onChangeFileHandler} />
+      null : (
         <VideoPlayer
           urlVideo={videoLoadedAsUrl}
           uploadProgress={uploadProgress}

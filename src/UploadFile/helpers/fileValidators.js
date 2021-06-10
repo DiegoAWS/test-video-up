@@ -11,7 +11,7 @@ export const isFile = (file) =>
 export const isFileValid = (file) =>
   isFile(file) &&
   file.size < 50000000 && // File limit of 50mb
-  file.name.include(".");
+  file.name.includes(".");
 
 export const isFirstFileValid = (files) =>
   files &&
