@@ -6,8 +6,9 @@ const colorBrand = celebrity.global.colors.brand;
 
 export const PlayerWrapper = styled.div`
   position: relative;
-  padding-top: 56.25%;
-  .videoPlayer {
+  padding-top: ${(props) => (props.noPadding ? "0px" : "56.25%")};
+  .videoPlayer,
+  .videoRecorder {
     position: absolute;
     top: 0;
     left: 0;

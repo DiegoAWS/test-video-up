@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { WelcomeFileUpload, VideoPlayer, VideoRecorder } from "./components/";
-
+import {
+  WelcomeFileUpload,
+  VideoPlayer,
+  VideoRecorderComponent,
+} from "./components/";
 import { videoUploader } from "./helpers/videoUploader";
 import { state } from "./struct";
 
@@ -38,7 +41,7 @@ export default function UploadFile({ urlUpload }) {
   };
 
   /**
-   * Open de VideoRecorder
+   * Show VideoRecorder
    */
   const onClickRecordVideo = () => {
     console.log("clicked");
@@ -86,9 +89,12 @@ export default function UploadFile({ urlUpload }) {
           onChange={onChangeFileHandler}
           onClickRecordVideo={onClickRecordVideo}
         />
-      ) : status ===
-        state.RECORDING ? // <VideoRecorder onChange={onChangeFileHandler} />
-      null : (
+      ) : status === state.RECORDING ? (
+        <VideoRecorderComponent
+          cancel={resetVideoStatus}
+          onChange={onChangeFileHandler}
+        />
+      ) : (
         <VideoPlayer
           urlVideo={videoLoadedAsUrl}
           uploadProgress={uploadProgress}
