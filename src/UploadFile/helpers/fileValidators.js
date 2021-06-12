@@ -3,10 +3,7 @@
  * @param {File} file
  * @returns
  */
-export const isFile = (file) =>
-  file &&
-  file.name && // File should have a name
-  file.size; // And a size
+export const isFile = (file) => file && file.size; // And a size
 
 export const isFileValid = (file) =>
   isFile(file) &&
@@ -16,5 +13,6 @@ export const isFileValid = (file) =>
 export const isFirstFileValid = (files) =>
   files &&
   Array.isArray(files) &&
+  files.length > 0 && // Not empty Array
   files[0] && // File [0] exist
   isFileValid(files[0]); // and is valid

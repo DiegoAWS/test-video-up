@@ -4,6 +4,7 @@ import {
   VideoPlayer,
   VideoRecorderComponent,
 } from "./components/";
+import { parseToURL } from "./helpers";
 import { videoUploader } from "./helpers/videoUploader";
 import { state } from "./struct";
 
@@ -21,12 +22,11 @@ export default function UploadFile({ urlUpload }) {
   const onChangeFileHandler = (file) => {
     setVideoFile(file);
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
+    const fileUrl = parseToURL(file);
+    if (fileUrl) {
       setStatus(state.LOADED);
-      setVideoLoadedAsUrl(reader.result);
-    };
+      setVideoLoadedAsUrl(fileUrl);
+    }
   };
 
   /**
@@ -44,7 +44,6 @@ export default function UploadFile({ urlUpload }) {
    * Show VideoRecorder
    */
   const onClickRecordVideo = () => {
-    console.log("clicked");
     setStatus(state.RECORDING);
   };
 
@@ -74,14 +73,13 @@ export default function UploadFile({ urlUpload }) {
     }, 2000);
   };
 
-  const resetVideoStatus = () => {
+  const resetStatus = () => {
     setStatus(state.INIT);
     setVideoLoadedAsUrl(null);
     setVideoFile(null);
     setUploadProgress(0);
   };
 
-  console.log(status);
   return (
     <div>
       {status === state.INIT ? (
@@ -91,7 +89,7 @@ export default function UploadFile({ urlUpload }) {
         />
       ) : status === state.RECORDING ? (
         <VideoRecorderComponent
-          cancel={resetVideoStatus}
+          cancel={resetStatus}
           onChange={onChangeFileHandler}
         />
       ) : (
@@ -99,7 +97,7 @@ export default function UploadFile({ urlUpload }) {
           urlVideo={videoLoadedAsUrl}
           uploadProgress={uploadProgress}
           status={status}
-          cancel={resetVideoStatus}
+          cancel={resetStatus}
           uploadVideo={uploadVideoHandler}
         />
       )}

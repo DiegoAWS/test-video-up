@@ -12,7 +12,6 @@ export default function VideoPlayer({
   cancel,
   uploadVideo,
 }) {
-  console.log({ status });
   return (
     <div style={{ width: "400px", margin: "0 auto" }}>
       <PlayerWrapper>
