@@ -1,5 +1,4 @@
-export { default as styleOfDragZone } from "./styleOfDragZone";
-export { isFirstFileValid } from "./fileValidators";
-export { isFileValid } from "./fileValidators";
-export { isFile } from "./fileValidators";
-export { parseToURL } from "./fileParser";
+export { default as styleOfDragZone } from './styleOfDragZone';
+export { default as isFirstFileValid, isFileValid, isFile } from './fileValidators';
+export { default as parseToURL } from './fileParser';
+export { default as videoUploader, cancelAxiosRequest } from './videoUploader';

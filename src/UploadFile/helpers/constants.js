@@ -25,3 +25,15 @@ export const acceptStyle = {
 export const rejectStyle = {
     borderColor: '#ff1744',
 };
+
+export const CANCELLED_BY_USER = 'CANCELLED_BY_USER';
+
+export const state = {
+    INIT: 'INIT',
+    LOADED: 'LOADED',
+    UPLOADING: 'UPLOADING',
+    UPLOADED: 'UPLOADED',
+    ERROR_UPLOADING: 'ERROR_UPLOADING',
+    COMPLETED: 'COMPLETED',
+    RECORDING: 'RECORDING',
+};

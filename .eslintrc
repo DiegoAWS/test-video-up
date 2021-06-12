@@ -1,0 +1,47 @@
+{
+    "parser": "babel-eslint",
+    "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": false,
+    "codeFrame": false
+},
+"extends": [
+    "airbnb",
+    "plugin:prettier/recommended"
+],
+"plugins": [
+    "babel",
+    "react",
+    "jsx-a11y",
+    "import",
+    "react-hooks",
+    "prettier"
+],
+"env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+},
+"rules": {
+    "max-len": ["error", {"code": 100}],
+    "prefer-promise-reject-errors": ["off"],
+    "react/jsx-filename-extension": ["off"],
+    "react/prop-types": ["warn"],
+    "no-return-assign": ["off"],
+    "prettier/prettier": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/jsx-indent": ["error", 4],
+    "react/jsx-indent-props": ["error", 4],
+    "react/jsx-first-prop-new-line": "off",
+    "react/jsx-closing-bracket-location": "off",
+    "react/forbid-prop-types": "off",
+    "no-mixed-operators": "off",
+    "react/jsx-props-no-spreading" : "off",
+    "arrow-parens": "off",
+    "linebreak-style": 0,
+    "id-length": [2, { "min": 3, "exceptions": ["id", "li", "td", "th", "Ul", "to", "as"] }],
+    "react/default-props-match-prop-types": ["error", { "allowRequiredDefaults": true }],
+    "import/no-cycle": "off"
+  }
+}
